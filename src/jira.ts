@@ -99,7 +99,7 @@ export async function jiraApiSearch({
       throw Error(message)
     }
   } catch (e) {
-    core.error('Error getting the existing issue')
+    core.error(e.message ? e.message : e);
     throw new Error('Error getting the existing issue')
   }
 }
