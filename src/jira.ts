@@ -91,15 +91,18 @@ export async function jiraApiSearch({
     }
     const response = await fetch(getUrl, requestParams)
     if (response.status === 200) {
+      core.info('got status: ' + response.status)
       return await response.json()
     } else {
       const error = await response.json()
       const errors = Object.values(error.errorMessages)
       const message = errors.join(',')
+      core.info('got status: ' + response.status)
+      core.error(message)
       throw Error(message)
     }
   } catch (e) {
-    core.error(e.message ? e.message : e);
+    core.error('Error getting the existing issue');
     throw new Error('Error getting the existing issue')
   }
 }
