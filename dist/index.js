@@ -312,12 +312,15 @@ function jiraApiSearch({ jql }) {
             };
             const response = yield (0, node_fetch_1.default)(getUrl, requestParams);
             if (response.status === 200) {
+                core.info(`got status: ${response.status}`);
                 return yield response.json();
             }
             else {
                 const error = yield response.json();
                 const errors = Object.values(error.errorMessages);
                 const message = errors.join(',');
+                core.info(`got status: ${response.status}`);
+                core.error(message);
                 throw Error(message);
             }
         }
