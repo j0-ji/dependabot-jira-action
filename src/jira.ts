@@ -87,7 +87,7 @@ export async function jiraApiSearch({
     core.info(`jql ${jql}`)
     const bodyData = `{
         "fields": ["*all"],
-        "jql": ${jql},
+        "jql": "${jql}",
         "maxResults": 1000
       }`
 
