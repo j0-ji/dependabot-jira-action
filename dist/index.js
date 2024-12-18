@@ -310,7 +310,7 @@ function jiraApiSearch({ jql }) {
             core.info(`jql ${jql}`);
             const bodyData = `{
         "fields": ["*all"],
-        "jql": ${jql},
+        "jql": "${jql}",
         "maxResults": 1000
       }`;
             const requestParams = {
