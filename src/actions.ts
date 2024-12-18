@@ -76,7 +76,8 @@ export async function syncJiraWithClosedDependabotPulls(
     const existingIssuesResponse = await jiraApiSearch({
       jql
     })
-    core.info(JSON.stringify(existingIssuesResponse))
+    const respString = JSON.stringify(existingIssuesResponse)
+    core.info(respString)
 
     if (
       existingIssuesResponse &&

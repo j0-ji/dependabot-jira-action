@@ -88,7 +88,7 @@ export async function jiraApiSearch({
     const bodyData = [
       {
         fields: ['*all'],
-        jql: jql,
+        jql,
         maxResults: 1000
       }
     ]
@@ -130,7 +130,8 @@ export async function createJiraIssue({
   const existingIssuesResponse = await jiraApiSearch({
     jql
   })
-  core.info(JSON.stringify(existingIssuesResponse))
+  let respString = JSON.stringify(existingIssuesResponse)
+  core.info(respString)
   if (
     existingIssuesResponse &&
     existingIssuesResponse.issues &&

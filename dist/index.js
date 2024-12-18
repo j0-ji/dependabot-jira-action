@@ -87,10 +87,12 @@ function syncJiraWithClosedDependabotPulls(params) {
             core.setOutput('Sync jira with closed dependabot pulls starting', new Date().toTimeString());
             const { repo, owner, label, projectKey, issueType, transitionDoneName } = params;
             // First find all issues in jira that are not done
-            const jql = `labels="${label}" AND project=${projectKey} AND issuetype=${issueType} AND status != Done`;
+            const jql = `labels=${label} AND project=${projectKey} AND issuetype=${issueType} AND status != Done`;
             const existingIssuesResponse = yield (0, jira_1.jiraApiSearch)({
                 jql
             });
+            const respString = JSON.stringify(existingIssuesResponse);
+            core.info(respString);
             if (existingIssuesResponse &&
                 existingIssuesResponse.issues &&
                 existingIssuesResponse.issues.length > 0) {
@@ -271,7 +273,7 @@ function getJiraApiUrlV3(path = '/') {
 exports.getJiraApiUrlV3 = getJiraApiUrlV3;
 function getJiraSearchApiUrl() {
     const subdomain = process.env.JIRA_SUBDOMAIN;
-    const url = `https://${subdomain}.atlassian.net/rest/api/2/search`;
+    const url = `https://${subdomain}.atlassian.net/rest/api/3/search/jql`;
     return url;
 }
 exports.getJiraSearchApiUrl = getJiraSearchApiUrl;
@@ -304,22 +306,28 @@ function jiraApiPost(params) {
 function jiraApiSearch({ jql }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const getUrl = `${getJiraSearchApiUrl()}?jql=${encodeURIComponent(jql)}`;
+            const getUrl = `${getJiraSearchApiUrl()}`;
             core.info(`jql ${jql}`);
+            const bodyData = [
+                {
+                    fields: ['*all'],
+                    jql,
+                    maxResults: 1000
+                }
+            ];
             const requestParams = {
-                method: 'GET',
-                headers: getJiraAuthorizedHeader()
+                method: 'POST',
+                headers: getJiraAuthorizedHeader(),
+                body: JSON.stringify(bodyData)
             };
             const response = yield (0, node_fetch_1.default)(getUrl, requestParams);
             if (response.status === 200) {
-                core.info(`got status: ${response.status}`);
                 return yield response.json();
             }
             else {
                 const error = yield response.json();
                 const errors = Object.values(error.errorMessages);
                 const message = errors.join(',');
-                core.info(`got status: ${response.status}`);
                 core.error(message);
                 throw Error(message);
             }
@@ -337,6 +345,8 @@ function createJiraIssue({ label, projectKey, summary, issueType = 'Bug', repoNa
         const existingIssuesResponse = yield jiraApiSearch({
             jql
         });
+        let respString = JSON.stringify(existingIssuesResponse);
+        core.info(respString);
         if (existingIssuesResponse &&
             existingIssuesResponse.issues &&
             existingIssuesResponse.issues.length > 0) {
