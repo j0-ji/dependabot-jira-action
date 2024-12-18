@@ -127,9 +127,9 @@ export async function createJiraIssue({
   lastUpdatedAt,
   pullNumber
 }: CreateIssue): Promise<ApiRequestResponse> {
-  const jql = `summary~"${summary}" AND description~"${createIssueNumberString(
+  const jql = `summary~'${summary}' AND description~'${createIssueNumberString(
     pullNumber
-  )}" AND labels="${label}" AND project="${projectKey}" AND issuetype="${issueType}"`
+  )}' AND labels='${label}' AND project='${projectKey}' AND issuetype='${issueType}'`
   const existingIssuesResponse = await jiraApiSearch({
     jql
   })
