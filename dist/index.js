@@ -306,13 +306,15 @@ function jiraApiPost(params) {
 function jiraApiSearch({ jql }) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const getUrl = `${getJiraSearchApiUrl()}`;
-            core.info(`jql ${jql}`);
+            const getUrl = getJiraSearchApiUrl();
+            core.info(`jql: ${jql}`);
+            core.info(`url: ${getUrl}`);
             const bodyData = `{
         "fields": ["*all"],
         "jql": "${jql}",
         "maxResults": 1000
       }`;
+            core.info(`body: ${bodyData}`);
             const requestParams = {
                 method: 'POST',
                 headers: getJiraAuthorizedHeader(),
@@ -320,10 +322,12 @@ function jiraApiSearch({ jql }) {
             };
             const response = yield (0, node_fetch_1.default)(getUrl, requestParams);
             if (response.status === 200) {
+                core.info(`resp. status: ${response.status}`);
                 return yield response.json();
             }
             else {
                 const error = yield response.json();
+                core.info(`resp. status: ${response.status}`);
                 const errors = Object.values(error.errorMessages);
                 const message = errors.join(',');
                 core.error(message);

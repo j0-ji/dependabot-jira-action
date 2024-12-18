@@ -83,13 +83,15 @@ export async function jiraApiSearch({
   jql
 }: SearchIssue): Promise<ApiRequestSearchResponse> {
   try {
-    const getUrl = `${getJiraSearchApiUrl()}`
-    core.info(`jql ${jql}`)
+    const getUrl = getJiraSearchApiUrl()
+    core.info(`jql: ${jql}`)
+    core.info(`url: ${getUrl}`)
     const bodyData = `{
         "fields": ["*all"],
         "jql": "${jql}",
         "maxResults": 1000
       }`
+    core.info(`body: ${bodyData}`)
 
     const requestParams: RequestInit = {
       method: 'POST',
@@ -98,9 +100,11 @@ export async function jiraApiSearch({
     }
     const response = await fetch(getUrl, requestParams)
     if (response.status === 200) {
+      core.info(`resp. status: ${response.status}`)
       return await response.json()
     } else {
       const error = await response.json()
+      core.info(`resp. status: ${response.status}`)
       const errors = Object.values(error.errorMessages)
       const message = errors.join(',')
       core.error(message)
