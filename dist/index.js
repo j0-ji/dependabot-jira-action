@@ -309,7 +309,7 @@ function jiraApiSearch({ jql }) {
             const getUrl = `${getJiraSearchApiUrl()}`;
             core.info(`jql ${jql}`);
             const bodyData = `{
-        "fields": ['*all'],
+        "fields": ["*all"],
         "jql": ${jql},
         "maxResults": 1000
       }`;
