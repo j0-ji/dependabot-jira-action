@@ -308,17 +308,15 @@ function jiraApiSearch({ jql }) {
         try {
             const getUrl = `${getJiraSearchApiUrl()}`;
             core.info(`jql ${jql}`);
-            const bodyData = [
-                {
-                    fields: ['*all'],
-                    jql,
-                    maxResults: 1000
-                }
-            ];
+            const bodyData = `{
+        "fields": ['*all'],
+        "jql": ${jql},
+        "maxResults": 1000
+      }`;
             const requestParams = {
                 method: 'POST',
                 headers: getJiraAuthorizedHeader(),
-                body: JSON.stringify(bodyData)
+                body: bodyData
             };
             const response = yield (0, node_fetch_1.default)(getUrl, requestParams);
             if (response.status === 200) {

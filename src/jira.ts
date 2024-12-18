@@ -85,17 +85,16 @@ export async function jiraApiSearch({
   try {
     const getUrl = `${getJiraSearchApiUrl()}`
     core.info(`jql ${jql}`)
-    const bodyData = [
-      {
-        fields: ['*all'],
-        jql,
-        maxResults: 1000
-      }
-    ]
+    const bodyData = `{
+        "fields": ['*all'],
+        "jql": ${jql},
+        "maxResults": 1000
+      }`
+
     const requestParams: RequestInit = {
       method: 'POST',
       headers: getJiraAuthorizedHeader(),
-      body: JSON.stringify(bodyData)
+      body: bodyData
     }
     const response = await fetch(getUrl, requestParams)
     if (response.status === 200) {
